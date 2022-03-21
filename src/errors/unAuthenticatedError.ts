@@ -1,7 +1,7 @@
 import BaseError from "./baseError";
 
 class UnAuthenticatedError extends BaseError {
-    statusCode = 401;
+    statusCode = 401; // UnAuthenticated
 
     constructor(message: string = "UnAuthenticated!") {
         super(message);

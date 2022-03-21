@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import cors from 'cors';
 import { deserializeUser } from './middlewares';
 import errorHandler from './middlewares/errorHandler';

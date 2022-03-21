@@ -6,7 +6,7 @@ interface ErrorMessage {
 abstract class BaseError extends Error {
 	abstract statusCode: number;
 	
-	constructor(message: string = "an error occurred") {
+	constructor(message: string = "An error occurred") {
 		super();
 	}
 

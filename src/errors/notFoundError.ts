@@ -1,7 +1,7 @@
 import BaseError from './baseError';
 
 class NotFoundError extends BaseError {
-	statusCode = 404;
+	statusCode = 404; // Not found
 
 	constructor(message: string = 'Not Found') {
         super(message);

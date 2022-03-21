@@ -2,7 +2,7 @@ import { ValidationError as YupValidationError } from 'yup';
 import BaseError from './baseError';
 
 class ValidationError extends BaseError {
-	statusCode = 422;
+	statusCode = 422; // Unprocessable entity
 
 	constructor(public error: YupValidationError) {
 		super();

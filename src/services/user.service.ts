@@ -1,5 +1,5 @@
 import { omit } from 'lodash';
-import { DocumentDefinition, FilterQuery, LeanDocument, QueryOptions } from 'mongoose';
+import { DocumentDefinition, FilterQuery, QueryOptions } from 'mongoose';
 import User, { UserDocument } from '../models/user.model';
 
 export const createUser = async (

@@ -1,10 +1,10 @@
 import logger from './utils/logger.util';
 import config from 'config';
 import dbConnect from './utils/dbConnect.util';
-import createServer from './server';
+import server from './server';
 
 // Declarations
-const app = createServer();
+const app = server();
 const port = config.get<number>('port');
 
 app.listen(port, async () => {
