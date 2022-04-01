@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
-import config from 'config';
 import logger from './logger.util';
 
 export default async () => {
-	const dbURL = config.get<string>('dbURL');
+	const dbURL = process.env.DB_URL as string;
 
 	return await mongoose
 		.connect(dbURL)

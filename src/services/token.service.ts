@@ -2,7 +2,6 @@ import { UserDocument } from '../models/user.model';
 import Service from './service';
 import { LeanDocument, LeanDocumentElement } from 'mongoose';
 import { decode, sign } from '../utils/jwt.util';
-import config from 'config';
 import { get, omit } from 'lodash';
 import { SessionDocument } from '../models/session.model';
 import SessionService from './session.service';
@@ -28,7 +27,7 @@ class TokenService implements Service {
 	}) {
 		const accessToken = await sign(
 			{ ...user, sessionId },
-			{ expiresIn: config.get('accessTokenTtl') }
+			{ expiresIn: process.env.ATTTL }
 		);
 
 		return accessToken;

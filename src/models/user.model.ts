@@ -1,8 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
-import config from 'config';
-
-
 
 export type UserType = {
 	_id: mongoose.Types.ObjectId;
@@ -46,7 +43,9 @@ userSchema.pre('save', async function (next) {
 
 	if (!user.isModified('password')) return next();
 
-	const salt = await bcrypt.genSalt(config.get<number>('saltWorkFactor'));
+	const saltFactory = parseInt(process.env.SALT as string);
+
+	const salt = await bcrypt.genSalt(saltFactory as number);
 
 	const hash = await bcrypt.hashSync(user.password, salt);
 

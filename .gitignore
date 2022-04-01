@@ -2,3 +2,5 @@
 /config/test.ts
 
 /node_modules
+
+.env

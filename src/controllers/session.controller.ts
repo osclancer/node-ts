@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import { get, omit } from 'lodash';
 import { UserDocument } from '../models/user.model';
 import { decode, sign } from '../utils/jwt.util';
-import config from 'config';
 import UnAuthenticatedError from '../errors/unAuthenticatedError';
 import Controller from './controller';
 import { SessionService, TokenService, UserService } from '../services';
@@ -41,7 +40,7 @@ class SessionController extends Controller<SessionService> {
 		});
 
 		const refreshToken = await sign(session, {
-			expiresIn: config.get('refreshTokenTtl'), // One Year
+			expiresIn: process.env.RTTTL, // One Year
 		});
 
 		return res.send({ accessToken, refreshToken });

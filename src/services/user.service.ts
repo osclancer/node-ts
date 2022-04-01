@@ -33,8 +33,6 @@ class UserService implements Service {
 	}): Promise<false | Omit<UserDocument, 'password'>>  {
 		const user = (await this.find({ email })) as UserDocument;
 
-		console.log(email);
-
 		if (!user) return false;
 	
 		const isValid = await user.comparePassword(password);
