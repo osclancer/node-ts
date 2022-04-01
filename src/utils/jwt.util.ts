@@ -1,7 +1,7 @@
 import jwt, { SignOptions, Secret, JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv'
 dotenv.config();
-const privateKey = process.env.PRIVATE_KEY as string;
+const privateKey = process.env.PRIVATE_KEY as Secret;
 
 export const sign = async (
 	payload: object | string,

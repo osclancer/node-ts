@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { get, omit } from 'lodash';
+import { get } from 'lodash';
 import { UserDocument } from '../models/user.model';
-import { decode, sign } from '../utils/jwt.util';
+import { sign } from '../utils/jwt.util';
 import UnAuthenticatedError from '../errors/unAuthenticatedError';
 import Controller from './controller';
 import { SessionService, TokenService, UserService } from '../services';
