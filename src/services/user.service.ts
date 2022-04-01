@@ -1,36 +1,48 @@
 import { omit } from 'lodash';
 import { DocumentDefinition, FilterQuery, QueryOptions } from 'mongoose';
 import User, { UserDocument } from '../models/user.model';
+import Service from './service';
 
-export const createUser = async (
-	input: DocumentDefinition<
-		Omit<UserDocument, 'createdAt' | 'updatedAt' | 'comparePassword'>
-	>
-) => {
-	return await User.create(input).catch(e => false);
-};
+class UserService implements Service {
+	async create<UserDocument>(
+		input: DocumentDefinition<
+			Omit<UserDocument, 'createdAt' | 'updatedAt' | 'comparePassword'>
+		>
+	) {
+		const user = new User(input);
 
-export const findUser = async (
-	query: FilterQuery<UserDocument>,
-    options?: QueryOptions | undefined
-): Promise<UserDocument | boolean | null> => {
-	return await User.findOne(query, {}, options).catch((e) => false);
-};
+		const savedUser = await user.save();
 
-export const validatePassword = async ({
-	email,
-	password,
-}: {
-	email: UserDocument['email'];
-	password: string;
-}) : Promise<false | Omit<UserDocument, 'password'>> => {
-	const user = (await findUser({ email })) as UserDocument;
+		if (!savedUser) throw Error();
+		return savedUser;
+	}
 
-	if (!user) return false;
+	async find<UserDocument>(
+		query: FilterQuery<UserDocument>,
+		options?: QueryOptions | undefined
+	): Promise<UserDocument | null> {
+		return await User.findOne(query, {}, options);
+	}
 
-	const isValid = await user.comparePassword(password);
+	async validatePassword({
+		email,
+		password,
+	}: {
+		email: UserDocument['email'];
+		password: string;
+	}): Promise<false | Omit<UserDocument, 'password'>>  {
+		const user = (await this.find({ email })) as UserDocument;
 
-	if (!isValid) return false;
+		console.log(email);
 
-	return omit(user.toJSON(), 'password') as UserDocument;
-};
+		if (!user) return false;
+	
+		const isValid = await user.comparePassword(password);
+	
+		if (!isValid) return false;
+	
+		return omit(user.toJSON(), 'password') as UserDocument;
+	}
+}
+
+export default UserService;

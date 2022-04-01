@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { get } from 'lodash';
-import { reCreateAccessToken } from '../services/session.service';
+import { TokenService } from '../services';
 import { decode } from '../utils/jwt.util';
 
 const deserializeUser = async (
@@ -26,7 +26,7 @@ const deserializeUser = async (
 	}
 
 	if (refreshToken && expired) {
-		const newAccessToken = await reCreateAccessToken(refreshToken);
+		const newAccessToken = await new TokenService().reCreate(refreshToken);
 
 		if (newAccessToken) {
 			res.setHeader('x-access-token', newAccessToken);

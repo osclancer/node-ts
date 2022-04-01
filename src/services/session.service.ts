@@ -1,84 +1,49 @@
 import {
-	LeanDocument,
-	LeanDocumentElement,
 	FilterQuery,
 	QueryOptions,
 	UpdateQuery,
 } from 'mongoose';
-import Session, { SessionDocument } from '../models/session.model';
+import Session from '../models/session.model';
 import { UserDocument } from '../models/user.model';
-import { decode, sign } from '../utils/jwt.util';
-import config from 'config';
-import { get, omit } from 'lodash';
-import { findUser } from './user.service';
+import Service from './service';
 
-export const findSession = async (
-	query: FilterQuery<SessionDocument>,
-	options?: QueryOptions
-): Promise<SessionDocument | null | false> => {
-	return await Session.findOne(query, {}, options).catch((e) => false);
-};
+class SessionService implements Service {
+	async create({
+		userId,
+		userAgent,
+	}: {
+		userId: UserDocument['_id'];
+		userAgent: string;
+	}) {
+		const session = new Session({ userId, userAgent });
 
-export const getSessions = async (query: FilterQuery<SessionDocument>) => {
-	return await Session.find(query).catch((e) => false);
-};
+		const savedSession = await session.save();
 
-export const createSession = async (
-	userId: UserDocument['_id'],
-	userAgent: string
-) => {
-	const session = await Session.create({ userId, userAgent });
+		if (!savedSession) throw Error();
 
-	return session.toJSON();
-};
+		return savedSession.toJSON();
+	}
 
-export const updateSession = async (
-	query: FilterQuery<SessionDocument>,
-	update: UpdateQuery<SessionDocument>,
-	options: QueryOptions = { new: true }
-) => {
-	return await Session.findOneAndUpdate(query, update, options).catch(
-		(e) => false
-	);
-};
+	async find<SessionDocument>(
+		query: FilterQuery<SessionDocument>,
+		options?: QueryOptions
+	): Promise<SessionDocument | null | boolean> {
+		return await Session.findOne(query, {}, options);
+	}
 
-export const createAccessToken = async ({
-	user,
-	sessionId,
-}: {
-	user:
-		| Omit<UserDocument, 'password'>
-		| LeanDocument<Omit<UserDocument, 'password'>>;
-	sessionId: LeanDocumentElement<SessionDocument['_id']>;
-}) => {
-	const accessToken = await sign(
-		{ ...user, sessionId },
-		{ expiresIn: config.get('accessTokenTtl') }
-	);
+	async all<SessionDocument>(
+		query: FilterQuery<SessionDocument> = {}
+	): Promise<SessionDocument[] | null | boolean> {
+		return await Session.find(query);
+	}
 
-	return accessToken;
-};
+	async update<SessionDocument>(
+		query: FilterQuery<SessionDocument>,
+		update: UpdateQuery<SessionDocument>,
+		options: QueryOptions = { new: true }
+	) {
+		return await Session.findOneAndUpdate(query, update, options);
+	}
+}
 
-export const reCreateAccessToken = async (refreshToken: string) => {
-	const { decoded } = await decode(refreshToken);
-
-	if (!decoded || !get(decoded, '_id')) return false;
-
-	const session = await findSession({ _id: get(decoded, '_id') });
-
-	if (!session || !session.valid) return false;
-
-	const user = (await findUser(
-		{ _id: session.userId },
-		{ lean: true }
-	)) as LeanDocument<UserDocument>;
-
-	if (!user) return false;
-
-	const accessToken = createAccessToken({
-		user: omit(user, 'password') as UserDocument,
-		sessionId: session.id,
-	});
-
-	return accessToken;
-};
+export default SessionService;

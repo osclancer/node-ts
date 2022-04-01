@@ -2,17 +2,26 @@ import { NextFunction, Request, Response } from 'express';
 import { omit } from 'lodash';
 import EmailAlreadyExists from '../errors/emailAlreadyExistsError';
 import { UserDocument } from '../models/user.model';
-import { createUser } from '../services/user.service';
+import UserService from '../services/user.service';
+import Controller from './controller';
+class UserController extends Controller<UserService> {
+	constructor() {
+		super(new UserService());
 
-export const createUserHandler = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
+		this.create = this.create.bind(this);
+	}
 
-	const user = await createUser(req.body) as UserDocument | false;
-	
-	if(! user) return next(new EmailAlreadyExists());
-	
-	return res.status(201).send(omit(user.toJSON(), 'password'));
-};
+	async create(req: Request, res: Response, next: NextFunction) {
+		const emailExists = await this.Service.find({ email: req.body.email });
+
+		if (emailExists) return next(new EmailAlreadyExists());
+
+		const user = (await this.Service.create(req.body)) as UserDocument;
+
+		if (user) {
+			return res.status(201).json(omit(user.toJSON(), 'password'));
+		}
+	}
+}
+
+export default UserController;

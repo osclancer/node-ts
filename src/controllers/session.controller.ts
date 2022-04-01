@@ -1,61 +1,72 @@
 import { NextFunction, Request, Response } from 'express';
-import { get } from 'lodash';
+import { get, omit } from 'lodash';
 import { UserDocument } from '../models/user.model';
-import {
-	createAccessToken,
-	createSession,
-	getSessions,
-	updateSession,
-} from '../services/session.service';
-import { validatePassword } from '../services/user.service';
 import { decode, sign } from '../utils/jwt.util';
 import config from 'config';
 import UnAuthenticatedError from '../errors/unAuthenticatedError';
+import Controller from './controller';
+import { SessionService, TokenService, UserService } from '../services';
 
-export const createSessionHandler = async (
-	req: Request<{}, {}, Pick<UserDocument, 'email' | 'password'>>,
-	res: Response,
-	next: NextFunction
-) => {
-	const user = await validatePassword(req.body);
+class SessionController extends Controller<SessionService> {
+	userService: UserService;
+	tokenService: TokenService;
 
-	if (!user) return next(new UnAuthenticatedError('Invalid credentials'));
+	constructor() {
+		super(new SessionService());
+		this.userService = new UserService();
+		this.tokenService = new TokenService();
 
-	const session = await createSession(
-		get(user, '_id'),
-		req.get('user-agent') as string
-	);
+		this.create = this.create.bind(this);
+		this.all = this.all.bind(this);
+		this.delete = this.delete.bind(this);
+	}
 
-	const accessToken = await createAccessToken({
-		user,
-		sessionId: session._id,
-	});
+	async create(
+		req: Request<{}, {}, Pick<UserDocument, 'email' | 'password'>>,
+		res: Response,
+		next: NextFunction
+	) {
+		const user = await this.userService.validatePassword(req.body);
 
-	const refreshToken = await sign(session, {
-		expiresIn: config.get('refreshTokenTtl'), // One Year
-	});
+		if (!user) return next(new UnAuthenticatedError('Invalid credentials'));
 
-	return res.send({ accessToken, refreshToken });
-};
+		const session = await this.Service.create({
+			userId: get(user, '_id'),
+			userAgent: req.get('user-agent') as string,
+		});
 
-export const getSessionsHandler = async (req: Request, res: Response) => {
-	const userId = get(req, 'user._id');
+		const accessToken = await this.tokenService.create({
+			user,
+			sessionId: session._id,
+		});
 
-	const sessions = await getSessions({ userId });
+		const refreshToken = await sign(session, {
+			expiresIn: config.get('refreshTokenTtl'), // One Year
+		});
 
-	return res.send(sessions);
-};
+		return res.send({ accessToken, refreshToken });
+	}
 
-export const invalidateSessionHandler = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
-	const sessionId = get(req, 'user.sessionId');
+	async all(req: Request, res: Response) {
+		const userId = get(req, 'user._id');
 
-	const session = updateSession({ _id: sessionId }, { valid: false });
+		const sessions = await this.Service.all({ userId });
 
-	if (!session) return next(new UnAuthenticatedError('Invalid Session'));
+		return res.json(sessions);
+	}
 
-	return res.sendStatus(200);
-};
+	async delete(req: Request, res: Response, next: NextFunction) {
+		const sessionId = get(req, 'user.sessionId');
+
+		const session = this.Service.update(
+			{ _id: sessionId },
+			{ valid: false }
+		);
+
+		if (!session) return next(new UnAuthenticatedError('Invalid Session'));
+
+		return res.sendStatus(200);
+	}
+}
+
+export default SessionController;
