@@ -2,25 +2,31 @@
 
 ### First
 You need to clone the repository by running this command:
-```
-$ git clone https://github.com/osclancer/node-ts [project name]
+```sh
+    $ git clone https://github.com/osclancer/node-ts [project name]
 ```
 > replace [project name] with yours
 
 you need to copy the example config and fill it with your configurations:
 
-```
-$ cp config/example.ts config/default.ts
-```
-
-now you can run the program using `dev` script:
-```
-$ npm run dev
+```sh
+    $ cp .env.example .env
 ```
 
+Now, you need to install the application dependencies, by running the following command:
+
+```sh
+    $ npm install
+```
+
+After that you can run the program using `dev` script:
+```sh
+    $ npm run dev
+```
+****
 ### For test
 you can use `test` special script as well.
-```
-$ npm test
+```sh
+    $ npm test
 ```
 > Happy hacking
