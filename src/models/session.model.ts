@@ -24,7 +24,15 @@ const sessionSchema = new Schema(
 			type: String,
 		},
 	},
-	{ timestamps: true }
+	{
+		toJSON: {
+			transform: (doc, ret) => {
+				ret.id = ret._id;
+				delete ret._id;
+			},
+		},
+		timestamps: true,
+	}
 );
 
 const Session = model<SessionDocument>('Session', sessionSchema);

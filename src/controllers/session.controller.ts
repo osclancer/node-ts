@@ -30,13 +30,13 @@ class SessionController extends Controller<SessionService> {
 		if (!user) return next(new UnAuthenticatedError('Invalid credentials'));
 
 		const session = await this.Service.create({
-			userId: get(user, '_id'),
+			userId: get(user, 'id'),
 			userAgent: req.get('user-agent') as string,
 		});
 
 		const accessToken = await this.tokenService.create({
 			user,
-			sessionId: session._id,
+			sessionId: session.id,
 		});
 
 		const refreshToken = await sign(session, {
@@ -52,7 +52,7 @@ class SessionController extends Controller<SessionService> {
 	}
 
 	async all(req: Request, res: Response) {
-		const userId = get(req, 'user._id');
+		const userId = get(req, 'user.id');
 
 		const sessions = await this.Service.all({ userId });
 
@@ -63,7 +63,7 @@ class SessionController extends Controller<SessionService> {
 		const sessionId = get(req, 'user.sessionId');
 
 		const session = this.Service.update(
-			{ _id: sessionId },
+			{ id: sessionId },
 			{ valid: false }
 		);
 

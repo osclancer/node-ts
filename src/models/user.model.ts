@@ -37,8 +37,10 @@ const userSchema = new Schema(
 	},
 	{
 		toJSON: {
-			transform(doc, ret) {
+			transform: (doc, ret) => {
+				ret.id = ret._id;
 				delete ret.password;
+				delete ret._id;
 				delete ret.salt;
 				delete ret.__v;
 			},
