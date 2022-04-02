@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieSession from 'cookie-session';
 import cors from 'cors';
 import { deserializeUser } from './middlewares';
 import errorHandler from './middlewares/errorHandler';
@@ -9,12 +10,19 @@ import notfound from './routes/notfound';
 const server = () => {
 	// Declarations
 	const app = express();
+	app.set('trust proxy', true);
 
 	// Middlewares
-	app.use(deserializeUser);
 	app.use(cors());
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: false }));
+	app.use(
+		cookieSession({
+			signed: false,
+			secure: process.env.NODE_ENV !== 'development',
+		})
+	);
+	app.use(deserializeUser);
 
 	// Routes
 	app.use('/api/users', users);

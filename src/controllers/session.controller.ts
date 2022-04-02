@@ -43,7 +43,12 @@ class SessionController extends Controller<SessionService> {
 			expiresIn: process.env.RTTTL, // One Year
 		});
 
-		return res.send({ accessToken, refreshToken });
+		req.session = {
+			accessToken,
+			refreshToken,
+		};
+
+		return res.send({ user });
 	}
 
 	async all(req: Request, res: Response) {

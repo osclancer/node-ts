@@ -8,7 +8,7 @@ export type UserType = {
 	password: string;
 	createdAt: Date;
 	updatedAt: Date;
-}
+};
 
 export interface UserDocument extends Document {
 	name: string;
@@ -35,7 +35,16 @@ const userSchema = new Schema(
 		email: { ...requiredString, unique: true },
 		password: requiredString,
 	},
-	{ timestamps: true }
+	{
+		toJSON: {
+			transform(doc, ret) {
+				delete ret.password;
+				delete ret.salt;
+				delete ret.__v;
+			},
+		},
+		timestamps: true,
+	}
 );
 
 userSchema.pre('save', async function (next) {
