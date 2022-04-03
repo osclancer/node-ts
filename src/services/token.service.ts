@@ -23,7 +23,7 @@ class TokenService implements Service {
 		user:
 			| Omit<UserDocument, 'password'>
 			| LeanDocument<Omit<UserDocument, 'password'>>;
-		sessionId: LeanDocumentElement<SessionDocument['_id']>;
+		sessionId: LeanDocumentElement<SessionDocument['id']>;
 	}) {
 		const accessToken = await sign(
 			{ ...user, sessionId },
@@ -37,16 +37,16 @@ class TokenService implements Service {
 	async reCreate(refreshToken: string) {
 		const { decoded } = await decode(refreshToken);
 
-		if (!decoded || !get(decoded, '_id')) return false;
+		if (!decoded || !get(decoded, 'id')) return false;
 
 		const session = (await this.session.find({
-			_id: get(decoded, '_id'),
+			id: get(decoded, 'id'),
 		})) as SessionDocument;
 
 		if (!session || !session.valid) return false;
 
 		const user = (await this.user.find(
-			{ _id: session.userId },
+			{ id: session.userId },
 			{ lean: true }
 		)) as LeanDocument<UserDocument>;
 

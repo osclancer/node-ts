@@ -2,7 +2,7 @@ import { Schema, Document, model } from 'mongoose';
 import { UserDocument } from './user.model';
 
 export interface SessionDocument extends Document {
-	userId: UserDocument['_id'];
+	userId: UserDocument['id'];
 	valid: boolean;
 	userAgent: string;
 	createdAt: Date;

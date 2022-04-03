@@ -12,7 +12,7 @@ class SessionService implements Service {
 		userId,
 		userAgent,
 	}: {
-		userId: UserDocument['_id'];
+		userId: UserDocument['id'];
 		userAgent: string;
 	}) {
 		const session = new Session({ userId, userAgent });

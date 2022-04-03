@@ -13,15 +13,16 @@ const server = () => {
 	app.set('trust proxy', true);
 
 	// Middlewares
-	app.use(cors());
 	app.use(express.json());
-	app.use(express.urlencoded({ extended: false }));
 	app.use(
 		cookieSession({
 			signed: false,
-			secure: process.env.NODE_ENV !== 'development',
+			secure: false,
+			// secure: process.env.NODE_ENV !== 'test',
 		})
 	);
+	app.use(express.urlencoded({ extended: false }));
+	app.use(cors());
 	app.use(deserializeUser);
 
 	// Routes

@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 export type UserType = {
-	_id: mongoose.Types.ObjectId;
+	id: mongoose.Types.ObjectId;
 	name: string;
 	email: string;
 	password: string;

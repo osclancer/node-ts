@@ -69,7 +69,7 @@ class SessionController extends Controller<SessionService> {
 
 		if (!session) return next(new UnAuthenticatedError('Invalid Session'));
 
-		return res.sendStatus(200);
+		return res.sendStatus(204);
 	}
 }
 
