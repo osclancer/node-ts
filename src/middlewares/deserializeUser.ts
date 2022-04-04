@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { get } from 'lodash';
 import { TokenService } from '../services';
 import { decode } from '../utils/jwt.util';
 

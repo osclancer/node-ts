@@ -2,7 +2,7 @@ import express from 'express';
 import cookieSession from 'cookie-session';
 import cors from 'cors';
 import { deserializeUser } from './middlewares';
-import errorHandler from './middlewares/errorHandler';
+import { errorHandler } from '@thefeqyorg/error-handlers';
 import users from './routes/users';
 import sessions from './routes/sessions';
 import notfound from './routes/notfound';

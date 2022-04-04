@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { omit } from 'lodash';
-import EmailAlreadyExists from '../errors/emailAlreadyExistsError';
+import { EmailAlreadyExists } from '@thefeqyorg/error-handlers';
 import { UserDocument } from '../models/user.model';
 import UserService from '../services/user.service';
 import Controller from './controller';

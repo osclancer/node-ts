@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { AnySchema } from 'yup';
-import ValidationError from '../errors/validationError';
+import { ValidationError } from '@thefeqyorg/error-handlers';
 
 const validateRequest =
 	(schema: AnySchema) =>

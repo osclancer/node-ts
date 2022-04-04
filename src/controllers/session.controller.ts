@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { get } from 'lodash';
 import { UserDocument } from '../models/user.model';
 import { sign } from '../utils/jwt.util';
-import UnAuthenticatedError from '../errors/unAuthenticatedError';
+import { UnAuthenticatedError } from '@thefeqyorg/error-handlers';
 import Controller from './controller';
 import { SessionService, TokenService, UserService } from '../services';
 
