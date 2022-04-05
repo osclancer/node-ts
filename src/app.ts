@@ -1,5 +1,5 @@
 import cookieSession from 'cookie-session';
-import express, {Request, Response, NextFunction} from 'express';
+import express from 'express';
 import cors from 'cors';
 import { deserializeUser } from './middlewares';
 import Route from './routes/route';
@@ -20,7 +20,6 @@ class App {
 	constructor() {
 		this.app = express();
 		this.port = parseInt(<string>process.env.APP_PORT) || 5000;
-
 
 		this.app.use(bodyParser.urlencoded({ extended: true }));
 		this.app.use(bodyParser.json());
