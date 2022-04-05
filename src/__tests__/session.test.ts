@@ -1,8 +1,8 @@
 import request from 'supertest';
-import server from '../server';
+import App from '../app';
 import { signIn, signUp } from './helpers';
 
-const app = server();
+const app = (new App()).app;
 const URI = '/api/sessions';
 
 describe('session', () => {

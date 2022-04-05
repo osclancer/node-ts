@@ -1,8 +1,8 @@
 import request, { Request } from 'supertest';
-import server from '../server';
+import App from '../app';
 import { userPayload } from './payloads';
 
-const app = server();
+const app = (new App()).app;
 
 export const signUp = async () => {
 	return await request(app).post('/api/users').send(userPayload).expect(201);

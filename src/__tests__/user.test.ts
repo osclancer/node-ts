@@ -1,9 +1,9 @@
 import request from 'supertest';
-import server from '../server';
+import App from '../app';
 import { signUp } from './helpers';
 import { userPayload } from './payloads';
 
-const app = server();
+const app = (new App()).app;
 
 describe('user', () => {
 	describe('create user (REGISTER)', () => {
@@ -29,12 +29,13 @@ describe('user', () => {
 		describe('given a duplicate email', () => {
 			it('should return 409 conflict', async () => {
 				await signUp();
-				const { text } = await request(app)
+				const response = await request(app)
 					.post('/api/users')
+					.accept('application/json')
 					.send(userPayload)
 					.expect(409);
 
-				expect(JSON.parse(text)?.errors[0]?.message).toBe('Email is already exists!');
+				expect(response.body?.errors[0]?.message).toBe('Email is already exists!');
 			});
 		});
 	});

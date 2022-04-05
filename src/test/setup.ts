@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
-import server from '../server';
 import { signUp } from '../__tests__/helpers';
 import { UserType } from '../models/user.model';
+import App from '../app';
 
-const app = server();
+const app = (new App()).app;
 
 let mongo: any;
 
