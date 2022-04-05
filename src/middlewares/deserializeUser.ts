@@ -1,6 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import { TokenService } from '../services';
+import { UserPayload } from '../types/Documents';
 import { decode } from '../utils/jwt.util';
+
+declare global {
+	namespace Express {
+		interface Request {
+			user?: UserPayload;
+		}
+	}
+}
 
 const deserializeUser = async (
 	req: Request,
@@ -15,8 +24,7 @@ const deserializeUser = async (
 	const { decoded, expired } = await decode(accessToken);
 
 	if (decoded) {
-		// @ts-ignore
-		req.user = decoded;
+		req.user = decoded as UserPayload;
 		return next();
 	}
 
@@ -31,8 +39,8 @@ const deserializeUser = async (
 			};
 
 			const { decoded } = await decode(newAccessToken);
-			// @ts-ignore
-			req.user = decoded;
+
+			req.user = decoded as UserPayload;
 		}
 
 		return next();
