@@ -1,3 +1,4 @@
+import { req } from '@thefeqyorg/error-handlers';
 import { Router } from 'express';
 import UserController from '../controllers/user.controller';
 import { validateRequest } from '../middlewares';
@@ -17,7 +18,7 @@ class UserRouter implements Route {
 		this.router.post(
 			this.path,
 			validateRequest(createUserSchema),
-			this.controller.create
+			req(this.controller.create)
 		);
 	}
 }

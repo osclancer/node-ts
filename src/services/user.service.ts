@@ -30,15 +30,15 @@ class UserService implements Service {
 	}: {
 		email: UserDocument['email'];
 		password: string;
-	}): Promise<false | Omit<UserDocument, 'password'>>  {
+	}): Promise<false | Omit<UserDocument, 'password'>> {
 		const user = (await this.find({ email })) as UserDocument;
 
 		if (!user) return false;
-	
+
 		const isValid = await user.comparePassword(password);
-	
+
 		if (!isValid) return false;
-	
+
 		return omit(user.toJSON(), 'password') as UserDocument;
 	}
 }

@@ -5,7 +5,7 @@ import { ForbiddenError } from '@thefeqyorg/error-handlers'
 const requiresUser = (req: Request, res: Response, next: NextFunction) => {
 	const user = get(req, 'user');
 
-	if (!user) return next(new ForbiddenError);
+	if (!user) throw new ForbiddenError;
 
 	return next();
 };

@@ -4,7 +4,7 @@ import { ValidationError } from '@thefeqyorg/error-handlers';
 
 const validateRequest =
 	(schema: AnySchema) =>
-	async (req: Request, res: Response, next: NextFunction) => {		
+	async (req: Request, res: Response, next: NextFunction) => {
 		await schema
 			.validate(
 				{
@@ -16,7 +16,7 @@ const validateRequest =
 			)
 			.then(() => next())
 			.catch((error) => {
-				next(new ValidationError(error))
+				throw new ValidationError(error);
 			});
 	};
 

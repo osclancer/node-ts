@@ -27,7 +27,7 @@ class SessionController extends Controller<SessionService> {
 	) {
 		const user = await this.userService.validatePassword(req.body);
 
-		if (!user) return next(new UnAuthenticatedError('Invalid credentials'));
+		if (!user) throw new UnAuthenticatedError('Invalid credentials');
 
 		const session = await this.Service.create({
 			userId: get(user, 'id'),
@@ -67,7 +67,7 @@ class SessionController extends Controller<SessionService> {
 			{ valid: false }
 		);
 
-		if (!session) return next(new UnAuthenticatedError('Invalid Session'));
+		if (!session) throw new UnAuthenticatedError('Invalid Session');
 
 		return res.sendStatus(204);
 	}

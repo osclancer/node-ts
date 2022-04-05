@@ -14,13 +14,11 @@ class UserController extends Controller<UserService> {
 	async create(req: Request, res: Response, next: NextFunction) {
 		const emailExists = await this.Service.find({ email: req.body.email });
 
-		if (emailExists) return next(new EmailAlreadyExists());
+		if (emailExists) throw new EmailAlreadyExists();
 
 		const user = (await this.Service.create(req.body)) as UserDocument;
 
-		if (user) {
-			return res.status(201).json(omit(user.toJSON(), 'password'));
-		}
+		return res.status(201).json(omit(user.toJSON(), 'password'));
 	}
 }
 

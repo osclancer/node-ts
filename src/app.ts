@@ -1,5 +1,5 @@
 import cookieSession from 'cookie-session';
-import express from 'express';
+import express, {Request, Response, NextFunction} from 'express';
 import cors from 'cors';
 import { deserializeUser } from './middlewares';
 import Route from './routes/route';
@@ -7,9 +7,10 @@ import logger from './utils/logger.util';
 import dbConnectUtil from './utils/dbConnect.util';
 import UserRouter from './routes/users';
 import SessionRouter from './routes/sessions';
-import { errorHandler } from '@thefeqyorg/error-handlers';
+import { errorHandler, req } from '@thefeqyorg/error-handlers';
 import dotenv from 'dotenv';
 import notfound from './routes/notfound';
+import bodyParser from 'body-parser';
 
 class App {
 	public app: express.Application;
@@ -20,6 +21,10 @@ class App {
 		this.app = express();
 		this.port = parseInt(<string>process.env.APP_PORT) || 5000;
 
+
+		this.app.use(bodyParser.urlencoded({ extended: true }));
+		this.app.use(bodyParser.json());
+
 		this.initializeMiddleware();
 		this.initializeRoutes(this.routes);
 		this.initializeErrorHandler();
@@ -28,7 +33,6 @@ class App {
 	private initializeMiddleware() {
 		dotenv.config();
 		this.app.set('trust proxy', true);
-		this.app.use(express.json());
 		this.app.use(
 			cookieSession({
 				signed: false,
@@ -36,7 +40,6 @@ class App {
 				// secure: process.env.NODE_ENV !== 'test',
 			})
 		);
-		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(cors());
 		this.app.use(deserializeUser);
 	}
@@ -46,7 +49,7 @@ class App {
 			this.app.use('/api/', route.router);
 		});
 
-		this.app.use('*', notfound);
+		this.app.use('*', req(notfound));
 	}
 
 	private initializeErrorHandler() {

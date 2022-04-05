@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import { NotFoundError } from "@thefeqyorg/error-handlers";
+import { NextFunction, Request, Response } from 'express';
+import { NotFoundError } from '@thefeqyorg/error-handlers';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-    return next(new NotFoundError("Error 404 | Not Found!"));
+	throw new NotFoundError('Error 404 | Not Found!');
 };
