@@ -10,8 +10,7 @@ import SessionRouter from './routes/sessions';
 import { errorHandler, req } from '@thefeqyorg/error-handlers';
 import dotenv from 'dotenv';
 import notfound from './routes/notfound';
-import bodyParser from 'body-parser';
-
+import path from 'path';
 class App {
 	public app: express.Application;
 	public port: number;
@@ -20,9 +19,6 @@ class App {
 	constructor() {
 		this.app = express();
 		this.port = parseInt(<string>process.env.APP_PORT) || 5000;
-
-		this.app.use(bodyParser.urlencoded({ extended: true }));
-		this.app.use(bodyParser.json());
 
 		this.initializeMiddleware();
 		this.initializeRoutes(this.routes);
@@ -38,6 +34,12 @@ class App {
 				secure: false,
 				// secure: process.env.NODE_ENV !== 'test',
 			})
+		);
+		this.app.use(express.json());
+		this.app.use(express.urlencoded({ extended: true }));
+		this.app.use(
+			'/public',
+			express.static(path.join(__dirname, '..', 'public'))
 		);
 		this.app.use(cors());
 		this.app.use(deserializeUser);
