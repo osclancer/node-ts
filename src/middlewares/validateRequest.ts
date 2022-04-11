@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { AnySchema } from 'yup';
 import { ValidationError } from '@thefeqyorg/error-handlers';
-import fs from 'fs'
+import fs from 'fs';
 
 const validateRequest =
 	(schema: AnySchema) =>
@@ -19,10 +19,9 @@ const validateRequest =
 			)
 			.then(() => next())
 			.catch((error) => {
-				if (req.file) 
-					fs.unlinkSync(req.file.path);
+				if (req.file) fs.unlinkSync(req.file.path);
 
-				throw new ValidationError(error);
+				next(new ValidationError(error));
 			});
 	};
 

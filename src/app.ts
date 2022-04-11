@@ -31,7 +31,8 @@ class App {
 		this.app.use(
 			cookieSession({
 				signed: false,
-				secure: process.env.NODE_ENV === 'production',
+				secure: false,
+				// secure: process.env.NODE_ENV === 'production',
 			})
 		);
 		this.app.use(express.json());
