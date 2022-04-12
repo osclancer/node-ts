@@ -7,10 +7,12 @@ import logger from './utils/logger.util';
 import dbConnectUtil from './utils/dbConnect.util';
 import UserRouter from './routes/users';
 import SessionRouter from './routes/sessions';
-import { errorHandler, req } from '@thefeqyorg/error-handlers';
+import { req } from '@thefeqyorg/error-handlers';
 import dotenv from 'dotenv';
 import notfound from './routes/notfound';
 import path from 'path';
+import { enableLogging } from './utils/errorLogger.util';
+import errorHandler from './middlewares/errorHandler';
 class App {
 	public app: express.Application;
 	public port: number;
@@ -66,6 +68,7 @@ class App {
 
 			logger.info(`Server is running on http://localhost:${this.port}`);
 			await dbConnectUtil();
+			enableLogging();
 		});
 	}
 }
